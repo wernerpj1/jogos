@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/home/riddle/.dotnet/store/|arch|/|tfm|",
+      "/home/riddle/.nuget/packages"
+    ]
+  }
+}
