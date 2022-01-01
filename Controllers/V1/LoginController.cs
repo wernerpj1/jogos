@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using back.ViewModels;
+using Jogos.Filters;
 using Jogos.Views.UsersViews;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -11,15 +9,17 @@ namespace Jogos.Controllers.V1
 {
     [ApiController]
     [Route("api/V1/[controller]")]
-    public class LoginConroller : ControllerBase
+    public class LoginController : ControllerBase
     {
         [SwaggerResponse(statusCode: 200, description: "Sucesso ao obter o usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 500, description: "Erro interno", Type = typeof(ErroGenericoView))]
         [HttpPost]
+        [Route("Login")]
+        [ValidacaoFilterCustomizado]
         public async Task<IActionResult>Login(LoginViewInput loginViewInput)
         {
-            return Created("", loginViewInput);
+            return Ok(loginViewInput);
         }
 
 
@@ -27,12 +27,13 @@ namespace Jogos.Controllers.V1
         [SwaggerResponse(statusCode: 400, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 500, description: "Erro interno", Type = typeof(ErroGenericoView))]
         [HttpPost]
+        [Route("Cadastrar")]
+        [ValidacaoFilterCustomizado]
         public async Task<IActionResult>CadastrarUsuario(UserViewInput userViewInput)
         {
             return Created("", userViewInput);
-        } 
 
-
+        }
         [SwaggerResponse(statusCode: 202, description: "Sucesso ao trocar a senha", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 501, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -57,7 +58,7 @@ namespace Jogos.Controllers.V1
         [SwaggerResponse(statusCode: 403, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 503, description: "Erro interno", Type = typeof(ErroGenericoView))]
         [HttpDelete]
-        public async Task<IActionResult>RemoveGame()
+        public async Task<IActionResult>RemoveUser()
         {
             return Ok();
         }
