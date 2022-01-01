@@ -1,8 +1,12 @@
 using System.Threading.Tasks;
 using back.ViewModels;
+using Jogos.Business.Entities;
+using Jogos.Configurations;
 using Jogos.Filters;
+using Jogos.Infraestruture.Data;
 using Jogos.Views.UsersViews;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Jogos.Controllers.V1
@@ -11,6 +15,13 @@ namespace Jogos.Controllers.V1
     [Route("api/V1/[controller]")]
     public class LoginController : ControllerBase
     {
+       // private readonly IAuthenticationService _authentication;
+//
+       // public LoginController(IAuthenticationService authentication)
+       // {
+       //     _authentication = authentication;
+       // }
+
         [SwaggerResponse(statusCode: 200, description: "Sucesso ao obter o usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 500, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -31,6 +42,20 @@ namespace Jogos.Controllers.V1
         [ValidacaoFilterCustomizado]
         public async Task<IActionResult>CadastrarUsuario(UserViewInput userViewInput)
         {
+            var options = new DbContextOptionsBuilder<JogoDbContext>();
+            options.UseSqlServer("Server=localhost; Database=JOGOS; User=riddle; password=verni");
+
+            JogoDbContext context = new JogoDbContext(options.Options);
+
+            var user = new User();
+            user.Nome = userViewInput.Nome;
+            user.Email = userViewInput.Email;
+            user.Senha = userViewInput.Senha;
+            user.IsAdmin = userViewInput.IsAdmin;
+
+            context.User.Add(user);
+            context.SaveChanges();
+
             return Created("", userViewInput);
 
         }
