@@ -1,8 +1,13 @@
 using System;
 using System.Text;
+using Jogos.Business.Repositories;
+using Jogos.Configurations;
+using Jogos.Infraestruture.Data;
+using Jogos.Infraestruture.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -73,7 +78,12 @@ namespace Jogos
                     ValidateAudience = false
                 };
             });
- 
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthenticationService, JwtService>();
+            services.AddDbContext<JogoDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             //services.AddDbContext<ArtigoDbContext>(options =>
             //{
             //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));

@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Threading.Tasks;
 using back.ViewModels;
 using Jogos.Business.Entities;
+using Jogos.Business.Repositories;
 using Jogos.Configurations;
 using Jogos.Filters;
 using Jogos.Infraestruture.Data;
@@ -9,18 +11,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
+
 namespace Jogos.Controllers.V1
 {
     [ApiController]
     [Route("api/V1/[controller]")]
     public class LoginController : ControllerBase
     {
-       // private readonly IAuthenticationService _authentication;
-//
-       // public LoginController(IAuthenticationService authentication)
-       // {
-       //     _authentication = authentication;
-       // }
+
+        private readonly IUserRepository _userRepository;
+        private readonly IAuthenticationService _authentication;
+
+        public LoginController(IAuthenticationService authentication, IUserRepository userRepository)
+        {
+            _authentication = authentication;
+            _userRepository = userRepository;
+        }
+
 
         [SwaggerResponse(statusCode: 200, description: "Sucesso ao obter o usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
@@ -30,7 +37,27 @@ namespace Jogos.Controllers.V1
         [ValidacaoFilterCustomizado]
         public async Task<IActionResult>Login(LoginViewInput loginViewInput)
         {
-            return Ok(loginViewInput);
+            User user = _userRepository.GetUser(loginViewInput.Nome);
+            if (user == null)
+            {
+                return BadRequest("Erro ao tentar acessar");
+            }
+           // if (user.Senha != loginViewInput.Senha.GenerateHashCode())
+           // {
+           //     return BadRequest("Erro ao tentar acessar");
+           // }
+            var userViewOutput = new UserViewOutput()
+            {
+                Id = user.Id,
+                Nome = loginViewInput.Nome,
+                Senha = user.Senha
+            };
+            var token = _authentication.GerarToken(userViewOutput);
+            return Ok(new
+            {
+                Token = token,
+                User = UserViewOutput
+            });
         }
 
 
@@ -43,18 +70,18 @@ namespace Jogos.Controllers.V1
         public async Task<IActionResult>CadastrarUsuario(UserViewInput userViewInput)
         {
             var options = new DbContextOptionsBuilder<JogoDbContext>();
-            options.UseSqlServer("Server=localhost; Database=JOGOS; User=riddle; password=verni");
-
+            options.UseSqlServer("Server=DESKTOP-2DVH51E\\SQLEXPRESS; Database= Jogos; user = sa; password = Deusminhavida!32756");
             JogoDbContext context = new JogoDbContext(options.Options);
+
 
             var user = new User();
             user.Nome = userViewInput.Nome;
             user.Email = userViewInput.Email;
             user.Senha = userViewInput.Senha;
             user.IsAdmin = userViewInput.IsAdmin;
-
-            context.User.Add(user);
-            context.SaveChanges();
+            _userRepository.AddUser(user);
+            _userRepository.Commit();
+            
 
             return Created("", userViewInput);
 

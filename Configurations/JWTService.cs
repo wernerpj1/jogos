@@ -17,7 +17,7 @@ namespace Jogos.Configurations
             _configuration = configuration;
         }
         
-        public object GerarToken(UserViewOutput userViewOutput)
+        public string GerarToken(UserViewOutput userViewOutput)
         {
              var secret = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfigurations:Secret").Value);
             var symmetricSecurityKey = new SymmetricSecurityKey(secret);
