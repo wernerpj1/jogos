@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -88,7 +89,12 @@ namespace Jogos
             services.AddScoped<IAuthenticationService, JwtService>();
             services.AddDbContext<JogoDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection"), serverVersion);
+                options.LogTo(Console.WriteLine, LogLevel.Information);
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
             });
            
         }
