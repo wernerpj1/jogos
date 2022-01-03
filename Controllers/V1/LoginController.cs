@@ -28,7 +28,11 @@ namespace Jogos.Controllers.V1
             _userRepository = userRepository;
         }
 
-
+        /// <summary>
+        /// This service allow to authenticate an User active.
+        /// </summary>
+        /// <param name="loginViewInput">View model do jogo</param>
+        /// <returns>Return status ok, with User data and the token</returns>
         [SwaggerResponse(statusCode: 200, description: "Sucesso ao obter o usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 500, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -37,30 +41,34 @@ namespace Jogos.Controllers.V1
         [ValidacaoFilterCustomizado]
         public async Task<IActionResult>Login(LoginViewInput loginViewInput)
         {
-            User user = _userRepository.GetUser(loginViewInput.Nome);
+            User user = _userRepository.GetUser(loginViewInput.Email);
             if (user == null)
             {
-                return BadRequest("Erro ao tentar acessar");
+                return BadRequest("The user request wasn´t found");
             }
-           // if (user.Senha != loginViewInput.Senha.GenerateHashCode())
-           // {
-           //     return BadRequest("Erro ao tentar acessar");
-           // }
+            if (user.Senha != loginViewInput.Senha)
+            {
+                return BadRequest("Senha Incorreta");
+            }
             var userViewOutput = new UserViewOutput()
             {
                 Id = user.Id,
-                Nome = loginViewInput.Nome,
-                Senha = user.Senha
+                Email = loginViewInput.Email,
+                Nome = user.Nome
             };
             var token = _authentication.GerarToken(userViewOutput);
             return Ok(new
             {
                 Token = token,
-                User = UserViewOutput
+                User = userViewOutput
             });
         }
 
-
+        /// <summary>
+        /// This service allow to register an new User.
+        /// </summary>
+        /// <param name="userViewInput">View model do jogo</param>
+        /// <returns>Return status ok, with User data </returns>
         [SwaggerResponse(statusCode: 201, description: "Sucesso ao cadastrar usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 400, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 500, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -86,6 +94,12 @@ namespace Jogos.Controllers.V1
             return Created("", userViewInput);
 
         }
+
+        /// <summary>
+        /// This service allow to change the password of an existent User.
+        /// </summary>
+        
+        /// <returns>Return status ok </returns>
         [SwaggerResponse(statusCode: 202, description: "Sucesso ao trocar a senha", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 501, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -93,9 +107,13 @@ namespace Jogos.Controllers.V1
         public async Task<IActionResult>ChangePassword()
         {
             return Ok();
-        }                            
+        }
 
+        /// <summary>
+        /// This service allow to change the user.
+        /// </summary>
 
+        /// <returns>Return status ok, with User data </returns>
         [SwaggerResponse(statusCode: 202, description: "Sucesso ao alterar usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 501, description: "Erro interno", Type = typeof(ErroGenericoView))]
@@ -105,7 +123,11 @@ namespace Jogos.Controllers.V1
             return Ok();
         }
 
+        /// <summary>
+        /// This service allow to remove an existent User.
+        /// </summary>
 
+        /// <returns>Return status ok </returns>
         [SwaggerResponse(statusCode: 203, description: "Sucesso remover o usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 403, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 503, description: "Erro interno", Type = typeof(ErroGenericoView))]

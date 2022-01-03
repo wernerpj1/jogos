@@ -25,7 +25,7 @@ namespace Jogos.Infraestruture.Data.Repositories
 
         public User GetUser(string login)
         {
-           return _context.User.FirstOrDefault(u => u.Nome == login); 
+           return _context.User.FirstOrDefault(u => u.Email == login); 
         }
     }
 }

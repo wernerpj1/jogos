@@ -8,5 +8,6 @@ namespace Jogos.Views
         public string Imagem { get; set; }
         public string Descricao { get; set; }
         public double Price { get; set; }
+        public int IdUser { get; set; }
     }
 }

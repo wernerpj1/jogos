@@ -121,3 +121,4 @@ E:\workspace\Curso-DIO\jogos\obj\Debug\net5.0\Jogos.dll
 E:\workspace\Curso-DIO\jogos\obj\Debug\net5.0\ref\Jogos.dll
 E:\workspace\Curso-DIO\jogos\obj\Debug\net5.0\Jogos.pdb
 E:\workspace\Curso-DIO\jogos\obj\Debug\net5.0\Jogos.genruntimeconfig.cache
+E:\workspace\Curso-DIO\jogos\bin\Debug\net5.0\Jogos.xml

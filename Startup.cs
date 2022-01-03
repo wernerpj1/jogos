@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using Jogos.Business.Repositories;
 using Jogos.Configurations;
@@ -59,6 +61,9 @@ namespace Jogos
                     }
                 });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
             var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
             services.AddAuthentication(x => 
@@ -79,15 +84,13 @@ namespace Jogos
                 };
             });
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IJogoRepository, JogoRepository>();
             services.AddScoped<IAuthenticationService, JwtService>();
             services.AddDbContext<JogoDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            //services.AddDbContext<ArtigoDbContext>(options =>
-            //{
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            //});
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

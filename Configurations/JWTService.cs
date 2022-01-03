@@ -26,7 +26,7 @@ namespace Jogos.Configurations
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                       new Claim(ClaimTypes.NameIdentifier, userViewOutput.Id.ToString()),
-                      new Claim(ClaimTypes.Name, userViewOutput.Nome.ToString())
+                      new Claim(ClaimTypes.Name, userViewOutput.Email.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
