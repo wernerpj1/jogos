@@ -1,15 +1,14 @@
-using System.Linq;
-using System.Threading.Tasks;
 using back.ViewModels;
 using Jogos.Business.Entities;
 using Jogos.Business.Repositories;
 using Jogos.Configurations;
 using Jogos.Filters;
-using Jogos.Infraestruture.Data;
 using Jogos.Views.UsersViews;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 
 namespace Jogos.Controllers.V1
@@ -41,7 +40,7 @@ namespace Jogos.Controllers.V1
         [ValidacaoFilterCustomizado]
         public async Task<IActionResult>Login(LoginViewInput loginViewInput)
         {
-            User user = _userRepository.GetUser(loginViewInput.Email);
+             User user = _userRepository.GetUser(loginViewInput.Email);
             if (user == null)
             {
                 return BadRequest("The user request wasn´t found");
@@ -77,10 +76,8 @@ namespace Jogos.Controllers.V1
         [ValidacaoFilterCustomizado]
         public async Task<IActionResult>CadastrarUsuario(UserViewInput userViewInput)
         {
-            var options = new DbContextOptionsBuilder<JogoDbContext>();
-            options.UseSqlServer("Server=DESKTOP-2DVH51E\\SQLEXPRESS; Database= Jogos; user = sa; password = Deusminhavida!32756");
-            JogoDbContext context = new JogoDbContext(options.Options);
-
+            //var options = new DbContextOptionsBuilder<JogoDbContext>();
+            //JogoDbContext context = new JogoDbContext(options.Options);
 
             var user = new User();
             user.Nome = userViewInput.Nome;
@@ -96,30 +93,25 @@ namespace Jogos.Controllers.V1
         }
 
         /// <summary>
-        /// This service allow to change the password of an existent User.
-        /// </summary>
-        
-        /// <returns>Return status ok </returns>
-        [SwaggerResponse(statusCode: 202, description: "Sucesso ao trocar a senha", Type = typeof(UserViewOutput))]
-        [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
-        [SwaggerResponse(statusCode: 501, description: "Erro interno", Type = typeof(ErroGenericoView))]
-        [HttpPut]
-        public async Task<IActionResult>ChangePassword()
-        {
-            return Ok();
-        }
-
-        /// <summary>
         /// This service allow to change the user.
         /// </summary>
-
+        /// <param name="userViewInput">View model do jogo</param>
         /// <returns>Return status ok, with User data </returns>
-        [SwaggerResponse(statusCode: 202, description: "Sucesso ao alterar usuário", Type = typeof(UserViewOutput))]
+        [SwaggerResponse(statusCode: 200, description: "Sucesso ao alterar usuário", Type = typeof(UserViewOutput))]
         [SwaggerResponse(statusCode: 401, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 501, description: "Erro interno", Type = typeof(ErroGenericoView))]
         [HttpPatch]
-        public async Task<IActionResult>ChangeUser()
+        [Authorize]
+        public async Task<IActionResult>ChangeUser(UserViewInput userViewInput)
         {
+            var email = User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            User user = _userRepository.GetUser(email);
+            user.Email = userViewInput.Email;
+            user.Email = userViewInput.Email;
+            user.Senha = userViewInput.Senha;
+            user.IsAdmin = userViewInput.IsAdmin;
+            _userRepository.UpdateUser(user);
+            _userRepository.Commit();
             return Ok();
         }
 
@@ -132,8 +124,13 @@ namespace Jogos.Controllers.V1
         [SwaggerResponse(statusCode: 403, description: "Campos obrigatórios preenchidos incorretamente", Type = typeof(ErrosCamposView))]
         [SwaggerResponse(statusCode: 503, description: "Erro interno", Type = typeof(ErroGenericoView))]
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult>RemoveUser()
         {
+            var email = User.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            User user = _userRepository.GetUser(email);
+            _userRepository.RemoveUser(user);
+            _userRepository.Commit();
             return Ok();
         }
 

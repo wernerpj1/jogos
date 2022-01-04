@@ -27,5 +27,19 @@ namespace Jogos.Infraestruture.Data.Repositories
         {
            return _context.User.FirstOrDefault(u => u.Email == login); 
         }
+
+        public void RemoveUser(User user)
+        {
+            _context.Remove(user);
+
+            
+        }
+
+        public void UpdateUser(User user)
+        {
+            _context.Update(user);
+        }
+
+        
     }
 }

@@ -25,21 +25,14 @@
             <param name="userViewInput">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
-        <member name="M:Jogos.Controllers.V1.JogoController.ChangePrice">
-            <summary>
-            This service allow to change the price of an game.
-            </summary>
-            <param name="userViewInput">View model do jogo</param>
-            <returns>Return status ok, with An list of the games </returns>
-        </member>
-        <member name="M:Jogos.Controllers.V1.JogoController.ChangeGame">
+        <member name="M:Jogos.Controllers.V1.JogoController.ChangeGame(System.Int32,Jogos.Views.JogoViewInput)">
             <summary>
             This service allow to change all atributes of an game.
             </summary>
             <param name="userViewInput">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
-        <member name="M:Jogos.Controllers.V1.JogoController.RemoveGame">
+        <member name="M:Jogos.Controllers.V1.JogoController.RemoveGame(System.Int32)">
             <summary>
             This service allow to remove an game.
             </summary>
@@ -60,13 +53,7 @@
             <param name="userViewInput">View model do jogo</param>
             <returns>Return status ok, with User data </returns>
         </member>
-        <member name="M:Jogos.Controllers.V1.LoginController.ChangePassword">
-            <summary>
-            This service allow to change the password of an existent User.
-            </summary>
-            <returns>Return status ok </returns>
-        </member>
-        <member name="M:Jogos.Controllers.V1.LoginController.ChangeUser">
+        <member name="M:Jogos.Controllers.V1.LoginController.ChangeUser(Jogos.Views.UsersViews.UserViewInput)">
             <summary>
             This service allow to change the user.
             </summary>
