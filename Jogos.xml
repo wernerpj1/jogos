@@ -8,35 +8,39 @@
             <summary>
             This service allow to get an list of Games.
             </summary>
-            <param name="userViewInput">View model do jogo</param>
+            <returns>Return status ok, with An list of the games </returns>
+        </member>
+        <member name="M:Jogos.Controllers.V1.JogoController.GetExcludes">
+            <summary>
+            This service allow to get an list of Games.
+            </summary>
             <returns>Return status ok, with An list of the games </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.JogoController.ObterPorUsuario">
             <summary>
             This service allow to get an list of Games by User.
             </summary>
-            <param name="userViewInput">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.JogoController.Inserir(Jogos.Views.JogoViewInput)">
             <summary>
             This service allow to register an new game.
             </summary>
-            <param name="userViewInput">View model do jogo</param>
+            <param name="jogoViewInput">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.JogoController.ChangeGame(System.Int32,Jogos.Views.JogoViewInput)">
             <summary>
             This service allow to change all atributes of an game.
             </summary>
-            <param name="userViewInput">View model do jogo</param>
+            <param name="jogoViewInput">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.JogoController.RemoveGame(System.Int32)">
             <summary>
             This service allow to remove an game.
             </summary>
-            <param name="userViewInput">View model do jogo</param>
+            <param name="id">View model do jogo</param>
             <returns>Return status ok, with An list of the games </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.LoginController.Login(Jogos.Views.UsersViews.LoginViewInput)">
@@ -57,6 +61,7 @@
             <summary>
             This service allow to change the user.
             </summary>
+            <param name="userViewInput">View model do jogo</param>
             <returns>Return status ok, with User data </returns>
         </member>
         <member name="M:Jogos.Controllers.V1.LoginController.RemoveUser">

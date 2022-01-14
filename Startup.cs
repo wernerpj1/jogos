@@ -32,6 +32,17 @@ namespace Jogos
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                    });
+            });
             services.AddControllers()
             .ConfigureApiBehaviorOptions(options => 
             {
@@ -114,6 +125,8 @@ namespace Jogos
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseRouting();
 
